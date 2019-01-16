@@ -1,4 +1,3 @@
-
 @extends('layouts.secretariatnav')
 @section('content')
 
@@ -20,8 +19,17 @@
 				</div>
 			</form>
 		</div>
-    <button class="btn btn-default pull-right" type="button" style="margin-top:20px;" data-toggle="modal" data-target= "#item_add" onclick="location.href='/prestations/create'" >
-      <i class="glyphicon glyphicon-plus"></i> Ajouter Les prestations du Patient</button>
+		<li>
+		<button class="btn btn-default pull-right" type="submit"  style="margin-top:20px;" data-toggle="modal" data-target= "#item_add" >
+       <i class="glyphicon glyphicon-plus"></i>Ajouter Les prestations du Patient {{$patients->nom_per. ' ' .$patients->prenom_per}}"</button>
+		</li>
+
+<form  action="{{ route('addPrestation',$patients->id) }}" method="POST">
+
+		@csrf
+
+
+		<!--	<i class="glyphicon glyphicon-plus"></i><input type="submit" name="" value="Ajouter Les prestations du Patient {{$patients->nom_per. ' ' .$patients->prenom_per}}">-->
 
 
 <div class="container">
@@ -37,44 +45,36 @@
 
                    <thead>
 
-                   <th><input type="checkbox" id="checkall" /></th>
 
-                      <th>IDENTIFIANT </th>
-                     <th>NOM </th>
-                     <th>MONTANT </th>
+                     <!-- <th>IDENTIFIANT</th> -->
+                     <th>NOM</th>
+                     <th>MONTANT</th>
                      <th>ABREVIATION</th>
 
 
 
                    </thead>
-    <tbody>
-@foreach ($examens as $emp)
-    <tr>
-    <td><input id="identifiant" type="checkbox" class="checkthis" name="identifiant[]" value="$emp->id"/> </td>
+    					 		 <tbody>
+										 			@foreach($examens as $emp)
+    										<tr>
+    										 <td>
+													<input type="checkbox" class="checkthis" name="identifiant{{$emp->id}}" value="{{$emp->id}}">
+												 </td>
+									        <!-- <td> {{ $emp->id}}</td> -->
+									        <td> {{ $emp->nom_examen }}</td>
+									        <td> {{ $emp->montant_examen }}</td>
+									        <td> {{ $emp->abreviation}}</td>
+											</tr>
+  												@endforeach
+    								</tbody>
 
-        <th> {{ $emp->id}}</th>
-        <th> {{ $emp->nom_examen }}</th>
-        <th> {{ $emp->montant_examen }}</th>
-        <th> {{ $emp->abreviation}}</th>
-
-    </tr>
-
-  @endforeach
-
-
-
-
-
-    </tbody>
-
-</table>
-
-
-
+									</table>
             </div>
-
-        </div>
-	</div>
 </div>
-<span>{{ $examens->links() }}</span>
+</div>
+</div>
+</form>
+
+
+
     @endsection

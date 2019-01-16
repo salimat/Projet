@@ -19,6 +19,8 @@ class Prestation_faiteController extends Controller
     public function index()
     {
         //
+
+
         $prestations=Prestation_faite::all();
 
         return view('PrestationFaite.index',compact('prestations'));
@@ -26,17 +28,35 @@ class Prestation_faiteController extends Controller
 
     /**
      * Show the form for creating a new resource.
+
+
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+
+
+  public function create(Request $request)
     {
-        //
-        $sections=Section::all();
-        $examens=Examen::all();
-        $patients=Patient::all();
+        /*  if ($this->validate($request, [
+                 'identifiants' => 'required|array',
+               ])) {
+
+                $identifiant = $request->input('identifiant');
+                dd ($identifiant);
+                $data = array(
+             'identifiants' => $request->identifiant
+           );
+               dd ($data);*/
+
+
+
+
+
+      //  $identifiant = $request->get('identifiant');
+        $examens = Examen::find(2);
+        $patient = Patient::orderBy('id', 'desc')->first();
         return view('PrestationFaite.create')->with(['examens'=>$examens,
-      'patients'=>$patients]);
+        'patients'=>$patients]);
     }
 
     /**
@@ -72,6 +92,12 @@ class Prestation_faiteController extends Controller
     public function edit($id)
     {
         //
+        $examens = Examen::find([1,3,5]);
+        $total=Examen::find([1,3,5])->sum('montant_examen');
+        $patients = Patient::orderBy('id', 'desc')->first();
+        return view('PrestationFaite.edit')->with(['patients'=>$patients,
+      'examens'=>$examens,
+    'total'=>$total]);
     }
 
     /**
@@ -96,4 +122,50 @@ class Prestation_faiteController extends Controller
     {
         //
     }
+
+    public function addPrestation(Request $request,$idPatient)
+    {
+      $list = array();
+      for($i=0; $i<=count(Examen::all()); $i++){
+      //var_dump($identifiant=$request->input('identifiant'.$i));
+      if($identifiant=$request->input('identifiant'.$i))
+      {
+          array_push($list ,$i);
+          //$examens=Examen::find([$i]);
+      }
+      }
+    $examens=Examen::find($list);
+    $total=Examen::find($list)->sum('montant_examen');
+
+    $patients = Patient::orderBy('id', 'desc')->first();
+    return view('PrestationFaite.index',compact('prestations'))->with(['examens'=>$examens,
+    'patients'=>$patients,
+    'total'=>$total]);
+    }
+    public function addFacture(Request $request)
+    {
+      $list = array();
+      for($i=0; $i<=count(Examen::all()); $i++){
+      //var_dump($identifiant=$request->input('identifiant'.$i));
+      if($request->input($i))
+      {
+          array_push($list ,$i);
+          //$examens=Examen::find([$i]);
+      }
+      }
+      $examens=Examen::find($list);
+      $total=Examen::find($list)->sum('montant_examen');
+
+      $patients = Patient::orderBy('id', 'desc')->first();
+      return view('PrestationFaite.edit',compact('prestations'))->with(['examens'=>$examens,
+      'patients'=>$patients,
+      'total'=>$total]);
+
+    }
+    public function addInfoExamen()
+    {
+      $patients = Patient::orderBy('id', 'desc')->first();
+      return view('PrestationFaite.infoExamen')->with(['patients'=>$patients]);
+    }
+
 }

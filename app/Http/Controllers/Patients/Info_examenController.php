@@ -1,15 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Patients;
-//namespace App\Http\Controllers\Examens;
-use App\Modeles\Structuration\Section;
-use App\Modeles\Examens\Examen;
-
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Modeles\Examens\Examen;
+use App\Modeles\Patients\Patient;
 
-class PrestationController extends Controller
+class Info_examenController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -29,12 +27,8 @@ class PrestationController extends Controller
     public function create()
     {
         //
-        $sections=Section::all();
-        $examens=Examen::all();
-        return view('PrestationFaite.create')->with(['examens'=>$examens]);
-          /*return view('Examens.create')->with(['sections' =>$sections,
-          'materiels' =>$materiels,
-          'echantillons' =>$echantillons  ]);*/
+        $patients = Patient::orderBy('id', 'desc')->first();
+        return view('PrestationFaite/infoExamen')->with(['patients'=>$patients]);
     }
 
     /**
@@ -46,6 +40,11 @@ class PrestationController extends Controller
     public function store(Request $request)
     {
         //
+
+        $examens=Examen::all();
+      return redirect(route('examens.index'))->with(['examens'=>$examens
+    ]);
+
     }
 
     /**

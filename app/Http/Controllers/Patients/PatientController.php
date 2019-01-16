@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Patients;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Modeles\Patients\Patient;
+use App\Modeles\Examens\Examen;
 
 class PatientController extends Controller
 {
@@ -47,9 +48,10 @@ class PatientController extends Controller
         //pour inserer dans la base de donnees
         $this->validate($request, [
         'contact_per'=>'required|min:8']);
-
+          $examens=Examen::all();
         Patient::create ($request->all ());
-        return redirect(route('patients.index'));
+        return redirect(route('infoExamen.create'))->with(['examens'=>$examens
+      ]);
 
     }
 
@@ -63,6 +65,7 @@ class PatientController extends Controller
     {
         //
         $patients= Patient::findOrFail($id);
+return $patients->examens;
         return view('Patients.show',compact('patients'));
 
     }
@@ -116,10 +119,22 @@ class PatientController extends Controller
 
       return view('Patients.indexPrelevement',compact('patients'));
     }
-    public function indexRechercherPatient()
+    public function indexPatientJour(Request $request)
     {
+      $list = array();
+      for($i=0; $i<=count(Patient::all()); $i++){
+      //var_dump($identifiant=$request->input('identifiant'.$i));
+      if($request->input('identifiant'.$i))
+      {
+          array_push($list ,$i);
+          //$examens=Examen::find([$i]);
+      }
+      }
+      //$patients=Patient::find($list);
+      $patients = Patient::orderBy('id', 'desc')->first();
+    //$patients = Patient::orderBy('id', 'desc')->take(5)->get();
 
-      $patients=Patient::paginate(10);
-      return view('Patients.index1',compact('patients'));
+  //  $patients=Patient::all();
+      return view('Prelevements.index')->with(['patients'=>$patients]);
     }
 }
